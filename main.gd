@@ -16,4 +16,4 @@ func _input(event):
 # Called every frame. 'delta' is the elapsed time since the previous frame.
 func _process(delta):
 	for pikmin in allPikmin:
-		pikmin.set_target($Player.position)
+		pikmin.set_target($Player/Follow.global_position)

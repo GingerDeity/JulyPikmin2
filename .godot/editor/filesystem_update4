@@ -1,4 +1,7 @@
-res://player.gd
-res://main.gd
-res://player.tscn
 res://main.tscn
+res://player.tscn
+res://pikmin.tscn
+res://group_node.tscn
+res://pikmin.gd
+res://main.gd
+res://player.gd

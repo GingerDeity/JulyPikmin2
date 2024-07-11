@@ -7,14 +7,13 @@ extends CharacterBody2D
 @export var align_force: = 0.05
 @export var separation_force: = 0.05
 @export var view_distance := 50.0
-@export var avoid_distance := 20.0
-
+@export var avoid_distance := 50.0
 
 var _width = ProjectSettings.get_setting("display/window/size/viewport_width")
 var _height = ProjectSettings.get_setting("display/window/size/viewport_height")
 
 var _flock: Array = []
-var target: Vector2
+var _target: Vector2
 var _velocity: Vector2
 
 func _ready():
@@ -22,15 +21,14 @@ func _ready():
 	_velocity = Vector2(randf_range(-1, 1), randf_range(-1, 1)).normalized() * max_speed
 
 func set_target(target):
-	target = target
+	_target = target
 
 func _on_flock_view_body_entered(body: PhysicsBody2D):
-	if self != body:
+	if self != body && body is Pikmin:
 		_flock.append(body)
 
 func _on_flock_view_body_exited(body: PhysicsBody2D):
 	_flock.remove_at(_flock.find(body))
-
 
 #func _input(event):
 	#if event is InputEventMouseButton:
@@ -39,11 +37,10 @@ func _on_flock_view_body_exited(body: PhysicsBody2D):
 		#elif event.get_button_index() == MOUSE_BUTTON_RIGHT:
 			#_mouse_target = get_random_target()
 
-
 func _physics_process(_delta):
 	var mouse_vector = Vector2.ZERO
-	if target != Vector2.INF:
-		mouse_vector = global_position.direction_to(target) * max_speed * mouse_follow_force
+	if _target != Vector2.INF:
+		mouse_vector = global_position.direction_to(_target) * max_speed * mouse_follow_force
 	
 	# get cohesion, alignment, and separation vectors
 	var vectors = get_flock_status(_flock)
@@ -84,7 +81,7 @@ func get_flock_status(flock: Array):
 		flock_center /= flock_size
 
 		var center_dir = global_position.direction_to(flock_center)
-		var center_speed = max_speed * (global_position.distance_to(flock_center) / $FlockView/ViewRadius.shape.radius)
+		var center_speed = max_speed * (global_position.distance_to(flock_center) / $FlockView/CollisionShape2D.shape.radius)
 		center_vector = center_dir * center_speed
 
 	return [center_vector, align_vector, avoid_vector]
