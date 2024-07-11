@@ -7,12 +7,12 @@ extends CharacterBody2D
 @export var align_force: = 0.05
 @export var separation_force: = 0.05
 @export var view_distance := 50.0
-@export var avoid_distance := 50.0
+@export var avoid_distance := 30.0
 
 var _width = ProjectSettings.get_setting("display/window/size/viewport_width")
 var _height = ProjectSettings.get_setting("display/window/size/viewport_height")
 
-var _flock: Array = []
+var _neighbors: Array = []
 var _target: Vector2
 var _velocity: Vector2
 
@@ -23,12 +23,13 @@ func _ready():
 func set_target(target):
 	_target = target
 
-func _on_flock_view_body_entered(body: PhysicsBody2D):
+func _on_view_body_entered(body: PhysicsBody2D):
+	print("hewwo")
 	if self != body && body is Pikmin:
-		_flock.append(body)
+		_neighbors.append(body)
 
-func _on_flock_view_body_exited(body: PhysicsBody2D):
-	_flock.remove_at(_flock.find(body))
+func _on_view_body_exited(body: PhysicsBody2D):
+	_neighbors.remove_at(_neighbors.find(body))
 
 #func _input(event):
 	#if event is InputEventMouseButton:
@@ -38,19 +39,19 @@ func _on_flock_view_body_exited(body: PhysicsBody2D):
 			#_mouse_target = get_random_target()
 
 func _physics_process(_delta):
-	var mouse_vector = Vector2.ZERO
+	var target_vector = Vector2.ZERO
 	if _target != Vector2.INF:
-		mouse_vector = global_position.direction_to(_target) * max_speed * mouse_follow_force
+		target_vector = global_position.direction_to(_target) * max_speed * mouse_follow_force
 	
 	# get cohesion, alignment, and separation vectors
-	var vectors = get_flock_status(_flock)
+	var vectors = get_neighbors_status(_neighbors)
 	
 	# steer towards vectors
 	var cohesion_vector = vectors[0] * cohesion_force
 	var align_vector = vectors[1] * align_force
 	var separation_vector = vectors[2] * separation_force
 
-	var acceleration = cohesion_vector + align_vector + separation_vector + mouse_vector
+	var acceleration = target_vector + separation_vector #+ cohesion_vector + align_vector
 	
 	_velocity = (_velocity + acceleration).limit_length(max_speed)
 	
@@ -59,7 +60,7 @@ func _physics_process(_delta):
 	_velocity = velocity
 
 
-func get_flock_status(flock: Array):
+func get_neighbors_status(flock: Array):
 	var center_vector: = Vector2()
 	var flock_center: = Vector2()
 	var align_vector: = Vector2()
@@ -73,6 +74,7 @@ func get_flock_status(flock: Array):
 
 		var d = global_position.distance_to(neighbor_pos)
 		if d > 0 and d < avoid_distance:
+			print("hi")
 			avoid_vector -= (neighbor_pos - global_position).normalized() * (avoid_distance / d * max_speed)
 	
 	var flock_size = flock.size()
