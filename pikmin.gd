@@ -51,7 +51,7 @@ func _physics_process(_delta):
 	var align_vector = vectors[1] * align_force
 	var separation_vector = vectors[2] * separation_force
 
-	var acceleration = target_vector + separation_vector #+ cohesion_vector + align_vector
+	var acceleration = target_vector + separation_vector + cohesion_vector + align_vector
 	
 	_velocity = (_velocity + acceleration).limit_length(max_speed)
 	

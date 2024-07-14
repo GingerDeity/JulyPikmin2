@@ -21,8 +21,7 @@ scale = Vector2(0.6875, 0.6875)
 texture = ExtResource("1_0rc2m")
 
 [node name="Follow" type="Area2D" parent="."]
-position = Vector2(52, 1)
 
 [node name="Radius" type="CollisionShape2D" parent="Follow"]
-position = Vector2(128, 1)
+position = Vector2(-112, 0)
 shape = SubResource("CircleShape2D_r5hpl")
