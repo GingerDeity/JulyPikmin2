@@ -13,7 +13,7 @@ var _width = ProjectSettings.get_setting("display/window/size/viewport_width")
 var _height = ProjectSettings.get_setting("display/window/size/viewport_height")
 
 var _neighbors: Array = []
-var _target: Vector2
+var _target: Node2D
 var _velocity: Vector2
 
 func _ready():
@@ -40,8 +40,8 @@ func _on_view_body_exited(body: PhysicsBody2D):
 
 func _physics_process(_delta):
 	var target_vector = Vector2.ZERO
-	if _target != Vector2.INF:
-		target_vector = global_position.direction_to(_target) * max_speed * mouse_follow_force
+	if _target != null:
+		target_vector = global_position.direction_to(_target.position) * max_speed * mouse_follow_force
 	
 	# get cohesion, alignment, and separation vectors
 	var vectors = get_neighbors_status(_neighbors)
