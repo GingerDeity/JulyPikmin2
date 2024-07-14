@@ -55,3 +55,7 @@ create_pikmin={
 
 2d_physics/layer_1="Player"
 2d_physics/layer_2="Pikmin"
+
+[navigation]
+
+2d/default_cell_size=0.2
