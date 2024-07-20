@@ -1,0 +1,30 @@
+[gd_scene load_steps=4 format=3 uid="uid://ylxwqdkclaow"]
+
+[ext_resource type="Script" path="res://emini.gd" id="1_pvi1i"]
+[ext_resource type="Texture2D" uid="uid://v55x6kmtxmyn" path="res://icon.svg" id="1_rjr53"]
+
+[sub_resource type="CircleShape2D" id="CircleShape2D_j7dp7"]
+radius = 40.0
+
+[node name="Emini" type="CharacterBody2D"]
+collision_layer = 4
+collision_mask = 0
+script = ExtResource("1_pvi1i")
+
+[node name="Collision" type="CollisionShape2D" parent="."]
+shape = SubResource("CircleShape2D_j7dp7")
+
+[node name="Sprite2D" type="Sprite2D" parent="."]
+scale = Vector2(0.53125, 0.53125)
+texture = ExtResource("1_rjr53")
+
+[node name="FOV_Area" type="Area2D" parent="."]
+collision_layer = 4
+collision_mask = 3
+
+[node name="FOV" type="CollisionPolygon2D" parent="FOV_Area"]
+position = Vector2(360, -56)
+polygon = PackedVector2Array(-600, -184, -360, 48, -128, -184, -192, -240, -272, -272, -360, -280, -448, -272, -536, -232)
+
+[connection signal="body_entered" from="FOV_Area" to="." method="_on_fov_area_body_entered"]
+[connection signal="body_exited" from="FOV_Area" to="." method="_on_fov_area_body_exited"]

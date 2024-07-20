@@ -1,8 +1,9 @@
-[gd_scene load_steps=4 format=3 uid="uid://5rmheinuxb53"]
+[gd_scene load_steps=5 format=3 uid="uid://5rmheinuxb53"]
 
 [ext_resource type="Script" path="res://main.gd" id="1_c2x3n"]
 [ext_resource type="PackedScene" uid="uid://cni0drnmpu55g" path="res://player.tscn" id="1_x8vu4"]
 [ext_resource type="PackedScene" uid="uid://d1tiv376jb4cn" path="res://pikmin.tscn" id="2_w2jav"]
+[ext_resource type="PackedScene" uid="uid://ylxwqdkclaow" path="res://emini.tscn" id="4_e4kep"]
 
 [node name="Main" type="Node2D"]
 script = ExtResource("1_c2x3n")
@@ -10,3 +11,6 @@ pikminScene = ExtResource("2_w2jav")
 
 [node name="Player" parent="." instance=ExtResource("1_x8vu4")]
 position = Vector2(171, 107)
+
+[node name="Emini" parent="." instance=ExtResource("4_e4kep")]
+position = Vector2(713, 456)

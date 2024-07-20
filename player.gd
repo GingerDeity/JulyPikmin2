@@ -1,6 +1,6 @@
 class_name Player
 extends CharacterBody2D
-
+@export var pikminScene: PackedScene
 
 const SPEED = 300.0
 const JUMP_VELOCITY = -400.0
@@ -12,9 +12,9 @@ var pikmin_count = 0
 var gravity = ProjectSettings.get_setting("physics/2d/default_gravity")
 
 func _on_view_body_entered(body: PhysicsBody2D):
-	print(pikmin_count)
 	pikmin_count += 1
 	body.queue_free()
+	print(pikmin_count)
 
 func _physics_process(_delta):
 	# Get the input direction and handle the movement/deceleration.
@@ -26,6 +26,9 @@ func _physics_process(_delta):
 	
 func _input(event):
 	if event is InputEventMouseMotion:
-		var cursor_position = (event.position - position).limit_length(CURSOR_LIMIT)
-		$Cursor.position = (event.position - position).limit_length(CURSOR_LIMIT)
-		Input.warp_mouse(position + cursor_position)
+		$Cursor.position = ($Cursor.position + event.relative).limit_length(CURSOR_LIMIT)
+	elif event.is_action_pressed("throw"):
+		if (pikmin_count > 0):
+			get_parent().add_pikmin($Cursor.global_position)
+			pikmin_count -= 1
+			print(pikmin_count)

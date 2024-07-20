@@ -2,6 +2,7 @@ res://main.tscn
 res://player.tscn
 res://pikmin.tscn
 res://group_node.tscn
-res://main.gd
-res://pikmin.gd
 res://player.gd
+res://main.gd
+res://emini.tscn
+res://emini.gd
