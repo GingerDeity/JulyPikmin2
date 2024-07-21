@@ -1,8 +1,8 @@
 res://main.tscn
+res://main.gd
+res://emini.gd
 res://player.tscn
 res://pikmin.tscn
-res://group_node.tscn
-res://player.gd
-res://main.gd
 res://emini.tscn
-res://emini.gd
+res://player.gd
+res://pikmin.gd

@@ -14,7 +14,7 @@ var gravity = ProjectSettings.get_setting("physics/2d/default_gravity")
 func _on_view_body_entered(body: PhysicsBody2D):
 	pikmin_count += 1
 	body.queue_free()
-	print(pikmin_count)
+	print("[Player] Curr Inventory: ", pikmin_count)
 
 func _physics_process(_delta):
 	# Get the input direction and handle the movement/deceleration.
@@ -23,12 +23,12 @@ func _physics_process(_delta):
 	velocity = direction * SPEED
 	
 	move_and_slide()
-	
+
 func _input(event):
 	if event is InputEventMouseMotion:
 		$Cursor.position = ($Cursor.position + event.relative).limit_length(CURSOR_LIMIT)
 	elif event.is_action_pressed("throw"):
 		if (pikmin_count > 0):
-			get_parent().add_pikmin($Cursor.global_position)
+			get_parent().add_pikmin($Cursor.global_position, 2) #new, to-do: change 2 to actual enum name
 			pikmin_count -= 1
-			print(pikmin_count)
+			print("[Player] Curr Inventory: ", pikmin_count)

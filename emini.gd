@@ -18,7 +18,9 @@ func _ready():
 
 func set_target(target):
 	_target = target
-	
+
+#doing body-overlap detection here means all operations are being done with respect to frames,
+#unlike before where some operations weren't and some were, created weird interactions
 func _physics_process(_delta):
 	var target_direction = Vector2.ZERO
 	var target_distance = 0
@@ -27,36 +29,22 @@ func _physics_process(_delta):
 		sqrt(_velocity.x)
 		sqrt(_velocity.y)
 		set_rotation(position.angle_to_point(_target.position) + PI/2)
-		#rotate((rotation - PI/2) - position.angle_to_point(_target.position))
-		
-		#print("rotation ", rotation)
-		#print("angle ", position.angle_to_point(_target.global_position))
 	else:
 		_velocity = Vector2.ZERO
-	set_velocity(_velocity)
-	move_and_slide()
-	#match state:
-		#STATE.TARGET:
-			#pass
-		#STATE.ATTACK:
-			#pass 
-
-func closer_than_target(position: Vector2):
-	return global_position.distance_to(position) > global_position.distance_to(_target.position)
-
-func _on_fov_area_body_entered(body):
-	if (body is Player || body is Pikmin) && state != STATE.TARGET:
+	
+	if ($FOV_Area.has_overlapping_bodies()):
 		state = STATE.TARGET
-		set_target(body)
-		print(body.name + " entered")
-
-func _on_fov_area_body_exited(body):
-	var overlapping_bodies = $FOV_Area.get_overlapping_bodies()
-	if (!overlapping_bodies.size()):
+		evaluate_targeting()
+	else:
 		state = STATE.IDLE
 		set_target(null)
-		return
-		
+	
+	set_velocity(_velocity)
+	move_and_slide()
+
+#moved code from on_body_exited to here
+func evaluate_targeting():
+	var overlapping_bodies = $FOV_Area.get_overlapping_bodies()
 	var closest_entity = overlapping_bodies[0]
 	var closest_distance = closest_entity.position.distance_to(position)
 	for entity in overlapping_bodies.slice(1, overlapping_bodies.size()):
@@ -64,8 +52,39 @@ func _on_fov_area_body_exited(body):
 		if (curr_distance < closest_distance):
 			closest_distance = curr_distance
 			closest_entity = entity
-		print(closest_distance)
-
-	state = STATE.TARGET
 	set_target(closest_entity)
-	print(body.name + " exited")
+
+func closer_than_target(position: Vector2):
+	return global_position.distance_to(position) < global_position.distance_to(_target.position) #had to change to "<" for some reason
+
+#func _on_fov_area_body_entered(body):
+	#if state != STATE.TARGET:
+		#state = STATE.TARGET
+		#set_target(body)
+	#elif state == STATE.TARGET && closer_than_target(body.position):
+		#set_target(body)
+	#print("[Enemy] A " + body.name + " has entered my perception")
+	#var overlapping_bodies = $FOV_Area.get_overlapping_bodies()
+	#print("[Enemy] I see ", overlapping_bodies.size(), " entities")
+#
+#func _on_fov_area_body_exited(body):
+	#print("[Enemy] A " + body.name + " has exited my perception")
+	#var overlapping_bodies = $FOV_Area.get_overlapping_bodies()
+	#print("[Enemy] I see ", overlapping_bodies.size(), " entities")
+	#if (!overlapping_bodies.size()):
+		#state = STATE.IDLE
+		#set_target(null)
+		#return
+	#
+	#var closest_entity = overlapping_bodies[0]
+	#var closest_distance = closest_entity.position.distance_to(position)
+	#for entity in overlapping_bodies.slice(1, overlapping_bodies.size()):
+		#var curr_distance = entity.position.distance_to(position)
+		#if (curr_distance < closest_distance):
+			#closest_distance = curr_distance
+			#closest_entity = entity
+#
+	#print("[Enemy] The closest perceived entity is a ", closest_entity.name, 
+		#" that is ", closest_distance, " pixels away")
+	#state = STATE.TARGET
+	#set_target(closest_entity)

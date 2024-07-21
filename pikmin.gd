@@ -16,15 +16,21 @@ var _neighbors: Array = []
 var _target: Node2D
 var _velocity: Vector2
 
+enum STATE {IDLE, FOLLOW, THROWN, ATTACK} #new
+var state: STATE #new
+
 func _ready():
 	randomize()
 	_velocity = Vector2(randf_range(-1, 1), randf_range(-1, 1)).normalized() * max_speed
+
+func set_state(new_state):
+	state = new_state
 
 func set_target(target):
 	_target = target
 
 func _on_view_body_entered(body: PhysicsBody2D):
-	print("hewwo")
+	#print("[Pikmin] I perceive something")
 	if self != body && body is Pikmin:
 		_neighbors.append(body)
 
@@ -74,7 +80,6 @@ func get_neighbors_status(flock: Array):
 
 		var d = global_position.distance_to(neighbor_pos)
 		if d > 0 and d < avoid_distance:
-			print("hi")
 			avoid_vector -= (neighbor_pos - global_position).normalized() * (avoid_distance / d * max_speed)
 	
 	var flock_size = flock.size()
