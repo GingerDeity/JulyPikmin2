@@ -4,8 +4,8 @@
 [ext_resource type="Script" path="res://player.gd" id="1_m7gqn"]
 [ext_resource type="PackedScene" uid="uid://d1tiv376jb4cn" path="res://pikmin.tscn" id="2_063xx"]
 
-[sub_resource type="CircleShape2D" id="CircleShape2D_efjvw"]
-radius = 40.0
+[sub_resource type="RectangleShape2D" id="RectangleShape2D_54vrl"]
+size = Vector2(68, 66.75)
 
 [sub_resource type="CircleShape2D" id="CircleShape2D_tdtyd"]
 radius = 64.0
@@ -14,12 +14,11 @@ radius = 64.0
 radius = 288.111
 
 [node name="Player" type="CharacterBody2D"]
-collision_mask = 0
 script = ExtResource("1_m7gqn")
 pikminScene = ExtResource("2_063xx")
 
 [node name="PlayerCollision" type="CollisionShape2D" parent="."]
-shape = SubResource("CircleShape2D_efjvw")
+shape = SubResource("RectangleShape2D_54vrl")
 
 [node name="Icon" type="Sprite2D" parent="."]
 position = Vector2(1.52588e-05, -7.62939e-06)
@@ -30,7 +29,6 @@ texture = ExtResource("1_0rc2m")
 collision_mask = 2
 
 [node name="PikminPikup" type="CollisionShape2D" parent="PikminFollow"]
-position = Vector2(-104, 0)
 shape = SubResource("CircleShape2D_tdtyd")
 
 [node name="Cursor" type="Sprite2D" parent="."]
@@ -39,14 +37,11 @@ scale = Vector2(0.25, 0.25)
 texture = ExtResource("1_0rc2m")
 
 [node name="Whistle" type="Area2D" parent="."]
-collision_mask = 2
 
 [node name="WhistleCollision" type="CollisionShape2D" parent="Whistle"]
 shape = SubResource("CircleShape2D_73ggn")
 
 [node name="WhistleTimer" type="Timer" parent="."]
 
-[connection signal="body_entered" from="PikminFollow" to="." method="_on_pikmin_follow_body_entered"]
-[connection signal="body_exited" from="PikminFollow" to="." method="_on_pikmin_follow_body_exited"]
-[connection signal="body_entered" from="Whistle" to="." method="_on_whistle_body_entered"]
+[connection signal="body_entered" from="PikminFollow" to="." method="_on_view_body_entered"]
 [connection signal="timeout" from="WhistleTimer" to="." method="_on_whistle_timer_timeout"]

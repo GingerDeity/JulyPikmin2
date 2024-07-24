@@ -25,6 +25,3 @@ collision_mask = 3
 [node name="FOV" type="CollisionPolygon2D" parent="FOV_Area"]
 position = Vector2(360, -56)
 polygon = PackedVector2Array(-600, -184, -360, 48, -128, -184, -192, -240, -272, -272, -360, -280, -448, -272, -536, -232)
-
-[connection signal="body_entered" from="FOV_Area" to="." method="_on_fov_area_body_entered"]
-[connection signal="body_exited" from="FOV_Area" to="." method="_on_fov_area_body_exited"]

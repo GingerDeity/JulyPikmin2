@@ -6,10 +6,15 @@ extends CharacterBody2D
 var _width = ProjectSettings.get_setting("display/window/size/viewport_width")
 var _height = ProjectSettings.get_setting("display/window/size/viewport_height")
 
+const TUNNEL_VISION = 75
+
 enum STATE {IDLE, TARGET, ATTACK}
 var state: STATE
 var _target: Node2D
 var _velocity: Vector2
+
+#var health (is an int)
+#var power (is an int)
 
 func _ready():
 	state = STATE.IDLE
@@ -49,42 +54,10 @@ func evaluate_targeting():
 	var closest_distance = closest_entity.position.distance_to(position)
 	for entity in overlapping_bodies.slice(1, overlapping_bodies.size()):
 		var curr_distance = entity.position.distance_to(position)
-		if (curr_distance < closest_distance):
+		if curr_distance < (closest_distance - TUNNEL_VISION):
 			closest_distance = curr_distance
 			closest_entity = entity
 	set_target(closest_entity)
 
 func closer_than_target(position: Vector2):
 	return global_position.distance_to(position) < global_position.distance_to(_target.position) #had to change to "<" for some reason
-
-#func _on_fov_area_body_entered(body):
-	#if state != STATE.TARGET:
-		#state = STATE.TARGET
-		#set_target(body)
-	#elif state == STATE.TARGET && closer_than_target(body.position):
-		#set_target(body)
-	#print("[Enemy] A " + body.name + " has entered my perception")
-	#var overlapping_bodies = $FOV_Area.get_overlapping_bodies()
-	#print("[Enemy] I see ", overlapping_bodies.size(), " entities")
-#
-#func _on_fov_area_body_exited(body):
-	#print("[Enemy] A " + body.name + " has exited my perception")
-	#var overlapping_bodies = $FOV_Area.get_overlapping_bodies()
-	#print("[Enemy] I see ", overlapping_bodies.size(), " entities")
-	#if (!overlapping_bodies.size()):
-		#state = STATE.IDLE
-		#set_target(null)
-		#return
-	#
-	#var closest_entity = overlapping_bodies[0]
-	#var closest_distance = closest_entity.position.distance_to(position)
-	#for entity in overlapping_bodies.slice(1, overlapping_bodies.size()):
-		#var curr_distance = entity.position.distance_to(position)
-		#if (curr_distance < closest_distance):
-			#closest_distance = curr_distance
-			#closest_entity = entity
-#
-	#print("[Enemy] The closest perceived entity is a ", closest_entity.name, 
-		#" that is ", closest_distance, " pixels away")
-	#state = STATE.TARGET
-	#set_target(closest_entity)

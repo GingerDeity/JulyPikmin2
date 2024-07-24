@@ -15,13 +15,13 @@ var _height = ProjectSettings.get_setting("display/window/size/viewport_height")
 var _neighbors: Array = []
 var _target: Node2D
 var _velocity: Vector2
+var state
 
-enum STATE {IDLE, FOLLOW, THROWN, ATTACK} #new
-var state: STATE #new
+#var has_been_hit (is a bool)
+#var power (is an int)
 
 func _ready():
-	randomize()
-	_velocity = Vector2(randf_range(-1, 1), randf_range(-1, 1)).normalized() * max_speed
+	state = PIKMIN_STATE.IDLE
 
 func set_state(new_state):
 	state = new_state
@@ -30,36 +30,32 @@ func set_target(target):
 	_target = target
 
 func _on_view_body_entered(body: PhysicsBody2D):
-	#print("[Pikmin] I perceive something")
 	if self != body && body is Pikmin:
 		_neighbors.append(body)
 
 func _on_view_body_exited(body: PhysicsBody2D):
 	_neighbors.remove_at(_neighbors.find(body))
 
-#func _input(event):
-	#if event is InputEventMouseButton:
-		#if event.get_button_index() == MOUSE_BUTTON_LEFT:
-			#_mouse_target = event.position
-		#elif event.get_button_index() == MOUSE_BUTTON_RIGHT:
-			#_mouse_target = get_random_target()
-
 func _physics_process(_delta):
-	var target_vector = Vector2.ZERO
-	if _target != null:
-		target_vector = global_position.direction_to(_target.position) * max_speed * mouse_follow_force
-	
-	# get cohesion, alignment, and separation vectors
-	var vectors = get_neighbors_status(_neighbors)
-	
-	# steer towards vectors
-	var cohesion_vector = vectors[0] * cohesion_force
-	var align_vector = vectors[1] * align_force
-	var separation_vector = vectors[2] * separation_force
+	if state == PIKMIN_STATE.IDLE:
+		_target = null
+		_velocity = Vector2.ZERO
+	elif state == PIKMIN_STATE.IN_PARTY:
+		_velocity = Vector2.ZERO
+	elif state == PIKMIN_STATE.FOLLOW && _target != null:
+		var target_vector = global_position.direction_to(_target.global_position) * max_speed * mouse_follow_force
+		
+		# get cohesion, alignment, and separation vectors
+		var vectors = get_neighbors_status(_neighbors)
+		
+		# steer towards vectors
+		var cohesion_vector = vectors[0] * cohesion_force
+		var align_vector = vectors[1] * align_force
+		var separation_vector = vectors[2] * separation_force
 
-	var acceleration = target_vector + separation_vector #+ cohesion_vector + align_vector
-	
-	_velocity = (_velocity + acceleration).limit_length(max_speed)
+		var acceleration = target_vector + separation_vector #+ cohesion_vector + align_vector
+		
+		_velocity = (_velocity + acceleration).limit_length(max_speed)
 	
 	set_velocity(_velocity)
 	move_and_slide()

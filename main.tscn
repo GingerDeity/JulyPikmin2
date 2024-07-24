@@ -13,4 +13,4 @@ pikminScene = ExtResource("2_w2jav")
 position = Vector2(171, 107)
 
 [node name="Emini" parent="." instance=ExtResource("4_e4kep")]
-position = Vector2(713, 456)
+position = Vector2(912, 464)

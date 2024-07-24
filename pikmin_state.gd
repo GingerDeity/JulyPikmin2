@@ -1,0 +1,3 @@
+class_name PIKMIN_STATE
+
+enum {IDLE, FOLLOW, IN_PARTY, ATTACK, CARRY}
