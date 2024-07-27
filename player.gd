@@ -1,6 +1,7 @@
 class_name Player
 extends CharacterBody2D
 @export var pikminScene: PackedScene
+@export var whistleArea: Node2D
 
 const SPEED = 300.0
 const CURSOR_LIMIT = 250
@@ -13,7 +14,7 @@ var pikmin_count = 0
 var gravity = ProjectSettings.get_setting("physics/2d/default_gravity")
 
 func _ready():
-	$Whistle/WhistleCollision.disabled = true
+	whistleArea.disabled = true
 
 func _on_pikmin_follow_body_exited(body):
 	if body.state == PIKMIN_STATE.IN_PARTY:
@@ -48,15 +49,15 @@ func _input(event):
 			print("[Player] Curr Inventory: ", pikmin_count)
 	elif event.is_action_pressed("whistle"):
 		$WhistleTimer.start(WHISTLE_LIMIT)
-		$Whistle/WhistleCollision.disabled = false
+		whistleArea.disabled = false
 		print("whistle area enabled")
 	elif event.is_action_released("whistle"):
 		$WhistleTimer.stop()
-		$Whistle/WhistleCollision.disabled = true
+		whistleArea.disabled = true
 		print("whistle area disabled")
 
 func _on_whistle_timer_timeout():
-	$Whistle/WhistleCollision.disabled = true
+	whistleArea.disabled = true
 	print("whistle area disabled")
 
 func _on_whistle_body_entered(body):

@@ -13,10 +13,11 @@ radius = 64.0
 [sub_resource type="CircleShape2D" id="CircleShape2D_73ggn"]
 radius = 288.111
 
-[node name="Player" type="CharacterBody2D"]
+[node name="Player" type="CharacterBody2D" node_paths=PackedStringArray("whistleArea")]
 collision_mask = 0
 script = ExtResource("1_m7gqn")
 pikminScene = ExtResource("2_063xx")
+whistleArea = NodePath("Cursor/Whistle/WhistleCollision")
 
 [node name="PlayerCollision" type="CollisionShape2D" parent="."]
 shape = SubResource("CircleShape2D_efjvw")
@@ -38,15 +39,18 @@ position = Vector2(136, 2.27374e-13)
 scale = Vector2(0.25, 0.25)
 texture = ExtResource("1_0rc2m")
 
-[node name="Whistle" type="Area2D" parent="."]
+[node name="Whistle" type="Area2D" parent="Cursor"]
+position = Vector2(-544, -9.09496e-13)
+scale = Vector2(4, 4)
 collision_mask = 2
 
-[node name="WhistleCollision" type="CollisionShape2D" parent="Whistle"]
+[node name="WhistleCollision" type="CollisionShape2D" parent="Cursor/Whistle"]
+position = Vector2(136, 0)
 shape = SubResource("CircleShape2D_73ggn")
 
 [node name="WhistleTimer" type="Timer" parent="."]
 
 [connection signal="body_entered" from="PikminFollow" to="." method="_on_pikmin_follow_body_entered"]
 [connection signal="body_exited" from="PikminFollow" to="." method="_on_pikmin_follow_body_exited"]
-[connection signal="body_entered" from="Whistle" to="." method="_on_whistle_body_entered"]
+[connection signal="body_entered" from="Cursor/Whistle" to="." method="_on_whistle_body_entered"]
 [connection signal="timeout" from="WhistleTimer" to="." method="_on_whistle_timer_timeout"]
