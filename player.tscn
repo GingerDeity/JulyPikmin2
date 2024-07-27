@@ -31,7 +31,6 @@ texture = ExtResource("1_0rc2m")
 collision_mask = 2
 
 [node name="PikminPikup" type="CollisionShape2D" parent="PikminFollow"]
-position = Vector2(-104, 0)
 shape = SubResource("CircleShape2D_tdtyd")
 
 [node name="Cursor" type="Sprite2D" parent="."]

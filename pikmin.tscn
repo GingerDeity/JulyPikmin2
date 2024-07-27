@@ -1,4 +1,4 @@
-[gd_scene load_steps=5 format=3 uid="uid://d1tiv376jb4cn"]
+[gd_scene load_steps=6 format=3 uid="uid://d1tiv376jb4cn"]
 
 [ext_resource type="Script" path="res://pikmin.gd" id="1_3bhu4"]
 [ext_resource type="Texture2D" uid="uid://v55x6kmtxmyn" path="res://icon.svg" id="2_g1l7t"]
@@ -7,6 +7,9 @@
 
 [sub_resource type="RectangleShape2D" id="RectangleShape2D_x0smr"]
 size = Vector2(10.25, 10.5)
+
+[sub_resource type="CircleShape2D" id="CircleShape2D_vagex"]
+radius = 40.0
 
 [node name="Pikmin" type="CharacterBody2D"]
 collision_layer = 2
@@ -18,7 +21,7 @@ texture = ExtResource("2_g1l7t")
 
 [node name="FlockView" type="Area2D" parent="."]
 collision_layer = 2
-collision_mask = 2
+collision_mask = 6
 
 [node name="CollisionShape2D" type="CollisionShape2D" parent="FlockView"]
 shape = SubResource("CircleShape2D_snful")
@@ -26,5 +29,13 @@ shape = SubResource("CircleShape2D_snful")
 [node name="Collision" type="CollisionShape2D" parent="."]
 shape = SubResource("RectangleShape2D_x0smr")
 
-[connection signal="body_entered" from="FlockView" to="." method="_on_view_body_entered"]
+[node name="Notify" type="Area2D" parent="."]
+unique_name_in_owner = true
+collision_layer = 2
+collision_mask = 2
+
+[node name="NotifyCollision" type="CollisionShape2D" parent="Notify"]
+shape = SubResource("CircleShape2D_vagex")
+
+[connection signal="body_entered" from="FlockView" to="." method="_on_view_body_entered" flags=3]
 [connection signal="body_exited" from="FlockView" to="." method="_on_view_body_exited"]
