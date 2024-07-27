@@ -17,32 +17,69 @@ var _target: Node2D
 var _velocity: Vector2
 var state
 
-#var has_been_hit (is a bool)
-#var power (is an int)
+var _is_hit = false
+const DAMAGE = 1
 
 func _ready():
 	state = PIKMIN_STATE.IDLE
 
+func get_state():
+	return state
+
 func set_state(new_state):
 	state = new_state
+	if new_state == PIKMIN_STATE.IDLE:
+		set_target(null)
+		_velocity = Vector2.ZERO
+	elif new_state == PIKMIN_STATE.IN_PARTY:
+		_velocity = Vector2.ZERO
+	elif new_state == PIKMIN_STATE.ATTACK:
+		var entities = %Notify.get_overlapping_bodies()
+		for entity in entities:
+			if entity != self && entity is Pikmin && entity.get_state() != PIKMIN_STATE.ATTACK:
+				entity.set_target(_target)
+				entity.set_state(PIKMIN_STATE.ATTACK)
+				break
+
+func set_is_hit(new_hit):
+	_is_hit = new_hit
 
 func set_target(target):
 	_target = target
 
+func get_target():
+	return _target
+
+func _on_attack_windup_timeout():
+	print("[Pikmin] Attacking!")
+	var entities = %FlockView.get_overlapping_bodies()
+	for entity in entities:
+		if entity is Emini:
+			print("[Enemy] ", entity.get_health())
+			entity.set_health(entity.get_health() - DAMAGE)
+
 func _on_view_body_entered(body: PhysicsBody2D):
-	if self != body && body is Pikmin:
-		_neighbors.append(body)
+	if self != body:
+		if body is Pikmin:
+			_neighbors.append(body)
+		if body is Emini && state != PIKMIN_STATE.ATTACK:
+			set_target(body)
+			set_state(PIKMIN_STATE.ATTACK)
+			print("[Pikmin] Winding up attack!")
+			if %AttackWindup.time_left <= 0:
+				%AttackWindup.start()
 
 func _on_view_body_exited(body: PhysicsBody2D):
 	_neighbors.remove_at(_neighbors.find(body))
 
 func _physics_process(_delta):
-	if state == PIKMIN_STATE.IDLE:
-		_target = null
-		_velocity = Vector2.ZERO
-	elif state == PIKMIN_STATE.IN_PARTY:
-		_velocity = Vector2.ZERO
-	elif state == PIKMIN_STATE.FOLLOW && _target != null:
+	if _is_hit:
+		queue_free()
+		
+	if _target != null && _target is Emini && _target.get_health() <= 0:
+		set_state(PIKMIN_STATE.IDLE)
+	
+	if state == PIKMIN_STATE.FOLLOW || state == PIKMIN_STATE.ATTACK && _target != null:
 		var target_vector = global_position.direction_to(_target.global_position) * max_speed * mouse_follow_force
 		
 		# get cohesion, alignment, and separation vectors

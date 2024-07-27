@@ -4,20 +4,23 @@ extends CharacterBody2D
 @export var whistleArea: Node2D
 
 const SPEED = 300.0
-const CURSOR_LIMIT = 250
-const WHISTLE_LIMIT = 5.5
-const BASE_RADIUS = 20
+const WHISTLE_TIMER = 5.5
+var WHISTLE_RADIUS
+var CURSOR_LIMIT
 
-var pikmin_count = 0
+var pikmin_count = 5
 
 # Get the gravity from the project settings to be synced with RigidBody nodes.
 var gravity = ProjectSettings.get_setting("physics/2d/default_gravity")
 
 func _ready():
+	WHISTLE_RADIUS = whistleArea.shape.radius
+	CURSOR_LIMIT = WHISTLE_RADIUS
+	whistleArea.position = $Cursor.position
 	whistleArea.disabled = true
 
 func _on_pikmin_follow_body_exited(body):
-	if body.state == PIKMIN_STATE.IN_PARTY:
+	if body.get_state() == PIKMIN_STATE.IN_PARTY:
 		body.set_state(PIKMIN_STATE.FOLLOW)
 
 func _on_pikmin_follow_body_entered(body):
@@ -47,7 +50,7 @@ func _input(event):
 			pikmin_count -= 1
 			print("[Player] Curr Inventory: ", pikmin_count)
 	elif event.is_action_pressed("whistle"):
-		$WhistleTimer.start(WHISTLE_LIMIT)
+		$WhistleTimer.start(WHISTLE_TIMER)
 		whistleArea.disabled = false
 		print("whistle area enabled")
 	elif event.is_action_released("whistle"):

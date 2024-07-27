@@ -1,10 +1,13 @@
-[gd_scene load_steps=4 format=3 uid="uid://ylxwqdkclaow"]
+[gd_scene load_steps=5 format=3 uid="uid://ylxwqdkclaow"]
 
 [ext_resource type="Script" path="res://emini.gd" id="1_pvi1i"]
 [ext_resource type="Texture2D" uid="uid://v55x6kmtxmyn" path="res://icon.svg" id="1_rjr53"]
 
 [sub_resource type="CircleShape2D" id="CircleShape2D_j7dp7"]
 radius = 40.0
+
+[sub_resource type="CircleShape2D" id="CircleShape2D_xgwv1"]
+radius = 32.9848
 
 [node name="Emini" type="CharacterBody2D"]
 collision_layer = 4
@@ -24,4 +27,19 @@ collision_mask = 3
 
 [node name="FOV" type="CollisionPolygon2D" parent="FOV_Area"]
 position = Vector2(360, -56)
-polygon = PackedVector2Array(-592, -184, -360, 56, -128, -200, -192, -240, -272, -272, -360, -280, -448, -272, -536, -232)
+polygon = PackedVector2Array(-600, -184, -360, 48, -128, -184, -192, -240, -272, -272, -360, -280, -448, -272, -536, -232)
+
+[node name="BiteArea" type="Area2D" parent="."]
+unique_name_in_owner = true
+collision_layer = 4
+collision_mask = 2
+
+[node name="BiteCollision" type="CollisionShape2D" parent="BiteArea"]
+position = Vector2(0, -32)
+shape = SubResource("CircleShape2D_xgwv1")
+
+[node name="BiteWindup" type="Timer" parent="."]
+unique_name_in_owner = true
+one_shot = true
+
+[connection signal="timeout" from="BiteWindup" to="." method="_on_bite_windup_timeout"]
