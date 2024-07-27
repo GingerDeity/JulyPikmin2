@@ -12,6 +12,7 @@ enum STATE {IDLE, TARGET, ATTACK}
 var state: STATE
 var _target: Node2D
 var _velocity: Vector2
+const _max_angular_velocity = PI/4
 
 #var health (is an int)
 #var power (is an int)
@@ -26,14 +27,23 @@ func set_target(target):
 
 #doing body-overlap detection here means all operations are being done with respect to frames,
 #unlike before where some operations weren't and some were, created weird interactions
-func _physics_process(_delta):
+func _physics_process(delta):
 	var target_direction = Vector2.ZERO
 	var target_distance = 0
 	if _target != null:
-		_velocity = (_target.position - position).limit_length(max_speed)
+		#rotation = -PI/2
+		#_velocity = (_target.position - position).limit_length(max_speed)
 		sqrt(_velocity.x)
 		sqrt(_velocity.y)
-		set_rotation(position.angle_to_point(_target.position) + PI/2)
+		# converts rotation to a vector from the positive x axis
+		var direction_vector = Vector2.from_angle(Vector2.DOWN.angle_to(Vector2.from_angle(rotation)))
+		var target_vector = _target.position - position
+		var angle_difference = direction_vector.angle_to(target_vector)
+		var angular_velocity_limit = _max_angular_velocity * delta
+		var angular_velocity = clamp(angle_difference, -angular_velocity_limit, angular_velocity_limit)
+		print("angleDifference", angle_difference)
+		
+		rotate(angular_velocity)
 	else:
 		_velocity = Vector2.ZERO
 	

@@ -21,12 +21,11 @@ func _on_pikmin_follow_body_exited(body):
 		body.set_state(PIKMIN_STATE.FOLLOW)
 
 func _on_pikmin_follow_body_entered(body):
-	if body.state == PIKMIN_STATE.FOLLOW:
-		pikmin_count += 1
-		body.set_state(PIKMIN_STATE.IN_PARTY)
-		body.queue_free() #don't comment this line if you want pikmin to immediately despawn upon contact
-		get_parent().remove_child(body)
-		print("[Player] Curr Inventory: ", pikmin_count)
+	pikmin_count += 1
+	body.set_state(PIKMIN_STATE.IN_PARTY)
+	body.queue_free() #don't comment this line if you want pikmin to immediately despawn upon contact
+	get_parent().remove_child(body)
+	print("[Player] Curr Inventory: ", pikmin_count)
 
 func _physics_process(_delta):
 	# Get the input direction and handle the movement/deceleration.
