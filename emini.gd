@@ -7,29 +7,23 @@ var _height = ProjectSettings.get_setting("display/window/size/viewport_height")
 const SPEED = 100
 const TUNNEL_VISION = 75
 const TOTAL_HEALTH = 5
+const _max_angular_velocity = PI/4
 
 enum STATE {IDLE, TARGET, ATTACK}
 var state: STATE
 var _target: Node2D
 var _velocity: Vector2
-const _max_angular_velocity = PI/4
-
-#var health (is an int)
-#var power (is an int)
 var _health = TOTAL_HEALTH
 
 func _ready():
 	state = STATE.IDLE
 	set_target(null)
 
-func get_health():
-	return _health
+func get_health(): return _health
 
-func set_health(health):
-	_health = health
+func set_health(health): _health = health
 
-func set_target(target):
-	_target = target
+func set_target(target): _target = target
 
 #doing body-overlap detection here means all operations are being done with respect to frames,
 #unlike before where some operations weren't and some were, created weird interactions
@@ -72,21 +66,19 @@ func evaluate_targeting():
 	var closest_distance = closest_entity.position.distance_to(position)
 	for entity in overlapping_bodies.slice(1, overlapping_bodies.size()):
 		var curr_distance = entity.position.distance_to(position)
-		if curr_distance < (closest_distance - TUNNEL_VISION):
-			closest_distance = curr_distance
-			closest_entity = entity
+		if curr_distance >= (closest_distance - TUNNEL_VISION): continue
+		closest_distance = curr_distance
+		closest_entity = entity
 	set_target(closest_entity)
 	
-	if %BiteWindup.time_left <= 0:
-		%BiteWindup.start()
-		print("[Enemy] Winding up my bite")
+	if !%BiteArea.has_overlapping_bodies() || %BiteWindup.time_left > 0: return
+	
+	%BiteWindup.start()
+	print("[Enemy] Winding up my bite")
 
-func closer_than_target(position: Vector2):
-	return global_position.distance_to(position) < global_position.distance_to(_target.position) #had to change to "<" for some reason
+func closer_than_target(position: Vector2): return global_position.distance_to(position) < global_position.distance_to(_target.position) #had to change to "<" for some reason
 
 func _on_bite_windup_timeout():
 	print("[Enemy] Biting!")
 	var entities = %BiteArea.get_overlapping_bodies()
-	for entity in entities:
-		if entity is Pikmin:
-			entity.set_is_hit(true)
+	for entity in entities: if entity is Pikmin: entity.set_is_hit(true)
