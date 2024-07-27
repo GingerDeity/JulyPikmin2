@@ -6,16 +6,23 @@ var _height = ProjectSettings.get_setting("display/window/size/viewport_height")
 
 const SPEED = 100
 const TUNNEL_VISION = 75
+const TOTAL_HEALTH = 5
 
 enum STATE {IDLE, TARGET, ATTACK}
 var state: STATE
 var _target: Node2D
 var _velocity: Vector2
-var _health = 5
+var _health = TOTAL_HEALTH
 
 func _ready():
 	state = STATE.IDLE
 	set_target(null)
+
+func get_health():
+	return _health
+
+func set_health(health):
+	_health = health
 
 func set_target(target):
 	_target = target
@@ -23,6 +30,9 @@ func set_target(target):
 #doing body-overlap detection here means all operations are being done with respect to frames,
 #unlike before where some operations weren't and some were, created weird interactions
 func _physics_process(_delta):
+	if _health <= 0:
+		queue_free()
+	
 	var target_direction = Vector2.ZERO
 	var target_distance = 0
 	if _target != null:

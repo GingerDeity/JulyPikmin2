@@ -20,6 +20,7 @@ scale = Vector2(0.078125, 0.078125)
 texture = ExtResource("2_g1l7t")
 
 [node name="FlockView" type="Area2D" parent="."]
+unique_name_in_owner = true
 collision_layer = 2
 collision_mask = 6
 
@@ -37,5 +38,11 @@ collision_mask = 2
 [node name="NotifyCollision" type="CollisionShape2D" parent="Notify"]
 shape = SubResource("CircleShape2D_vagex")
 
+[node name="AttackWindup" type="Timer" parent="."]
+unique_name_in_owner = true
+wait_time = 0.5
+one_shot = true
+
 [connection signal="body_entered" from="FlockView" to="." method="_on_view_body_entered" flags=3]
 [connection signal="body_exited" from="FlockView" to="." method="_on_view_body_exited"]
+[connection signal="timeout" from="AttackWindup" to="." method="_on_attack_windup_timeout"]

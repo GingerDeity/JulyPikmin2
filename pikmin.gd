@@ -18,7 +18,7 @@ var _velocity: Vector2
 var state
 
 var _is_hit = false
-#var power (is an int)
+const DAMAGE = 1
 
 func _ready():
 	state = PIKMIN_STATE.IDLE
@@ -50,6 +50,14 @@ func set_target(target):
 func get_target():
 	return _target
 
+func _on_attack_windup_timeout():
+	print("[Pikmin] Attacking!")
+	var entities = %FlockView.get_overlapping_bodies()
+	for entity in entities:
+		if entity is Emini:
+			print("[Enemy] ", entity.get_health())
+			entity.set_health(entity.get_health() - DAMAGE)
+
 func _on_view_body_entered(body: PhysicsBody2D):
 	if self != body:
 		if body is Pikmin:
@@ -57,6 +65,9 @@ func _on_view_body_entered(body: PhysicsBody2D):
 		if body is Emini && state != PIKMIN_STATE.ATTACK:
 			set_target(body)
 			set_state(PIKMIN_STATE.ATTACK)
+			print("[Pikmin] Winding up attack!")
+			if %AttackWindup.time_left <= 0:
+				%AttackWindup.start()
 
 func _on_view_body_exited(body: PhysicsBody2D):
 	_neighbors.remove_at(_neighbors.find(body))
@@ -64,6 +75,9 @@ func _on_view_body_exited(body: PhysicsBody2D):
 func _physics_process(_delta):
 	if _is_hit:
 		queue_free()
+		
+	if _target != null && _target is Emini && _target.get_health() <= 0:
+		set_state(PIKMIN_STATE.IDLE)
 	
 	if state == PIKMIN_STATE.FOLLOW || state == PIKMIN_STATE.ATTACK && _target != null:
 		var target_vector = global_position.direction_to(_target.global_position) * max_speed * mouse_follow_force
