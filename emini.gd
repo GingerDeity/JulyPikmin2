@@ -7,7 +7,7 @@ var _height = ProjectSettings.get_setting("display/window/size/viewport_height")
 const SPEED = 100
 const TUNNEL_VISION = 75
 const TOTAL_HEALTH = 5
-const _max_angular_velocity = PI/4
+const MAX_ANGLULAR_SPEED = PI/4
 
 enum STATE {IDLE, TARGET, ATTACK}
 var state: STATE
@@ -41,7 +41,7 @@ func _physics_process(delta):
 		var direction_vector = Vector2.from_angle(Vector2.DOWN.angle_to(Vector2.from_angle(rotation)))
 		var target_vector = _target.position - position
 		var angle_difference = direction_vector.angle_to(target_vector)
-		var angular_velocity_limit = _max_angular_velocity * delta
+		var angular_velocity_limit = MAX_ANGLULAR_SPEED * delta
 		var angular_velocity = clamp(angle_difference, -angular_velocity_limit, angular_velocity_limit)
 		print("angleDifference", angle_difference)
 		

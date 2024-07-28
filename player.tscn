@@ -14,7 +14,7 @@ radius = 64.0
 radius = 288.111
 
 [node name="Player" type="CharacterBody2D" node_paths=PackedStringArray("whistleArea")]
-collision_mask = 0
+collision_mask = 9
 script = ExtResource("1_m7gqn")
 pikminScene = ExtResource("2_063xx")
 whistleArea = NodePath("Cursor/Whistle/WhistleCollision")

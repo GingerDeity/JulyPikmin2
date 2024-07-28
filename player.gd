@@ -8,7 +8,7 @@ const WHISTLE_TIMER = 5.5
 var WHISTLE_RADIUS
 var CURSOR_LIMIT
 
-var pikmin_count = 5
+var pikmin_count = 20
 
 # Get the gravity from the project settings to be synced with RigidBody nodes.
 var gravity = ProjectSettings.get_setting("physics/2d/default_gravity")
@@ -36,8 +36,8 @@ func _physics_process(_delta):
 	var direction = Input.get_vector("move_left", "move_right", "move_up", "move_down")
 	velocity = direction * SPEED
 	
-	if direction != Vector2.ZERO:
-		$PikminFollow.set_rotation($PikminFollow.position.angle_to_point(direction))
+	#if direction != Vector2.ZERO:
+		#$PikminFollow.set_rotation($PikminFollow.position.angle_to_point(direction))
 
 	move_and_slide()
 

@@ -1,7 +1,7 @@
 class_name Pikmin
 extends CharacterBody2D
 
-@export var max_speed: = 200.0
+@export var max_speed: = 20.0
 @export var mouse_follow_force: = 0.05
 @export var cohesion_force: = 0.05
 @export var align_force: = 0.05
@@ -68,18 +68,34 @@ func _on_view_body_entered(body: PhysicsBody2D):
 			print("[Pikmin] Winding up attack!")
 			if %AttackWindup.time_left <= 0:
 				%AttackWindup.start()
+		if body is QuenchingEmblem && state != PIKMIN_STATE.CARRY:
+			print("HI")
+			set_state(PIKMIN_STATE.CARRY)
+			var toFollow = body.get_path2follow2d()
+			randomize()
+			toFollow.progress_ratio = randf()
+			print(toFollow.position)
+			var point = Node2D.new()
+			point.position = toFollow.position
+			print(point.position)
+			toFollow.add_child(point)
+			set_target(point)
 
 func _on_view_body_exited(body: PhysicsBody2D):
-	_neighbors.remove_at(_neighbors.find(body))
+	if body is Pikmin:
+		_neighbors.remove_at(_neighbors.find(body))
 
 func _physics_process(_delta):
 	if _is_hit:
 		queue_free()
 		
+	if _target != null:
+		print(_target.position)
+		
 	if _target != null && _target is Emini && _target.get_health() <= 0:
 		set_state(PIKMIN_STATE.IDLE)
 	
-	if state == PIKMIN_STATE.FOLLOW || state == PIKMIN_STATE.ATTACK && _target != null:
+	if state == PIKMIN_STATE.FOLLOW || state == PIKMIN_STATE.ATTACK || state == PIKMIN_STATE.CARRY && _target != null:
 		var target_vector = global_position.direction_to(_target.global_position) * max_speed * mouse_follow_force
 		
 		# get cohesion, alignment, and separation vectors
@@ -91,7 +107,6 @@ func _physics_process(_delta):
 		var separation_vector = vectors[2] * separation_force
 
 		var acceleration = target_vector + separation_vector #+ cohesion_vector + align_vector
-		
 		_velocity = (_velocity + acceleration).limit_length(max_speed)
 	
 	set_velocity(_velocity)
