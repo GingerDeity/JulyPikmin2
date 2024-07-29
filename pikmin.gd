@@ -134,7 +134,7 @@ func get_neighbors_status(flock: Array):
 	if flock_size:
 		align_vector /= flock_size
 		flock_center /= flock_size
-
+		
 		var center_dir = global_position.direction_to(flock_center)
 		var center_speed = max_speed * (global_position.distance_to(flock_center) / $FlockView/CollisionShape2D.shape.radius)
 		center_vector = center_dir * center_speed

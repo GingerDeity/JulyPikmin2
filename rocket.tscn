@@ -2,9 +2,8 @@
 
 [ext_resource type="Texture2D" uid="uid://cii3ejusoqv3h" path="res://rocket.webp" id="1_d1ak0"]
 
-[sub_resource type="CapsuleShape2D" id="CapsuleShape2D_tktce"]
-radius = 64.0
-height = 240.0
+[sub_resource type="RectangleShape2D" id="RectangleShape2D_m1e15"]
+size = Vector2(112, 120)
 
 [node name="Rocket" type="StaticBody2D"]
 collision_mask = 7
@@ -15,4 +14,5 @@ scale = Vector2(0.154104, 0.139442)
 texture = ExtResource("1_d1ak0")
 
 [node name="CollisionShape2D" type="CollisionShape2D" parent="."]
-shape = SubResource("CapsuleShape2D_tktce")
+position = Vector2(0, 60)
+shape = SubResource("RectangleShape2D_m1e15")

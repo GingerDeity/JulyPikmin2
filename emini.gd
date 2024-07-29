@@ -51,7 +51,7 @@ func _physics_process(delta):
 	
 	if ($FOV_Area.has_overlapping_bodies()):
 		state = STATE.TARGET
-		evaluate_targeting()
+		evaluate_targeting(_target)
 	else:
 		state = STATE.IDLE
 		set_target(null)
@@ -60,10 +60,17 @@ func _physics_process(delta):
 	move_and_slide()
 
 #moved code from on_body_exited to here
-func evaluate_targeting():
+func evaluate_targeting(target):
 	var overlapping_bodies = $FOV_Area.get_overlapping_bodies()
-	var closest_entity = overlapping_bodies[0]
-	var closest_distance = closest_entity.position.distance_to(position)
+	var closest_entity
+	var closest_distance
+
+	if target != null:
+		closest_entity = target
+	else:
+		closest_entity =  overlapping_bodies[0]
+	closest_distance = closest_entity.position.distance_to(position)
+
 	for entity in overlapping_bodies.slice(1, overlapping_bodies.size()):
 		var curr_distance = entity.position.distance_to(position)
 		if curr_distance >= (closest_distance - TUNNEL_VISION): continue
