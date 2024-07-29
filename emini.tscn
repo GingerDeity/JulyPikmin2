@@ -22,12 +22,13 @@ scale = Vector2(0.53125, 0.53125)
 texture = ExtResource("1_rjr53")
 
 [node name="FOV_Area" type="Area2D" parent="."]
+unique_name_in_owner = true
 collision_layer = 4
 collision_mask = 3
 
 [node name="FOV" type="CollisionPolygon2D" parent="FOV_Area"]
 position = Vector2(360, -56)
-polygon = PackedVector2Array(-600, -184, -360, 48, -128, -184, -192, -240, -272, -272, -360, -280, -448, -272, -536, -232)
+polygon = PackedVector2Array(-600, -184, -408, 104, -360, 120, -304, 104, -128, -184, -192, -240, -272, -272, -360, -280, -448, -272, -536, -232)
 
 [node name="BiteArea" type="Area2D" parent="."]
 unique_name_in_owner = true
@@ -42,4 +43,8 @@ shape = SubResource("CircleShape2D_xgwv1")
 unique_name_in_owner = true
 one_shot = true
 
+[connection signal="body_entered" from="FOV_Area" to="." method="_on_fov_body_entered" flags=3]
+[connection signal="body_exited" from="FOV_Area" to="." method="_on_fov_body_exited" flags=3]
+[connection signal="body_entered" from="BiteArea" to="." method="_on_bite_body_entered" flags=3]
+[connection signal="body_exited" from="BiteArea" to="." method="_on_bite_body_exited" flags=3]
 [connection signal="timeout" from="BiteWindup" to="." method="_on_bite_windup_timeout"]
