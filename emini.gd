@@ -98,4 +98,6 @@ func evaluate_targeting():
 	
 func damage(damage):
 	_health -= damage
+	if _health <= 0:
+		queue_free()
 			

@@ -1,0 +1,46 @@
+[gd_scene load_steps=6 format=3 uid="uid://c8umdrkuo5oxq"]
+
+[ext_resource type="Script" path="res://quenching_emblem.gd" id="1_ksyma"]
+[ext_resource type="Texture2D" uid="uid://7dshoxuk41ku" path="res://Screenshot 2024-07-27 164330.png" id="2_tfkie"]
+
+[sub_resource type="CircleShape2D" id="CircleShape2D_0cp5a"]
+radius = 24.0
+
+[sub_resource type="CircleShape2D" id="CircleShape2D_rc0q6"]
+radius = 32.0
+
+[sub_resource type="Curve2D" id="Curve2D_f4e0a"]
+_data = {
+"points": PackedVector2Array(0, 0, 0, 0, 0, -24, 0, 0, 0, 0, 0, -24, 0, 0, 0, 0, 23, -12, 0, 0, 0, 0, 23, 7, 0, 0, 0, 0, 0, 24, 0, 0, 0, 0, -23, 12, 0.315336, 7.14762, -0.315336, -7.14762, -23, -10, 0, 0, 0, 0, 0, -24)
+}
+point_count = 8
+
+[node name="QuenchingEmblem" type="CharacterBody2D"]
+collision_layer = 8
+collision_mask = 7
+script = ExtResource("1_ksyma")
+
+[node name="Sprite2D" type="Sprite2D" parent="."]
+scale = Vector2(0.14557, 0.152174)
+texture = ExtResource("2_tfkie")
+
+[node name="CollisionShape2D" type="CollisionShape2D" parent="."]
+shape = SubResource("CircleShape2D_0cp5a")
+
+[node name="PushArea" type="Area2D" parent="."]
+collision_layer = 8
+collision_mask = 2
+
+[node name="PushCollide" type="CollisionShape2D" parent="PushArea"]
+shape = SubResource("CircleShape2D_rc0q6")
+
+[node name="PikUpPath" type="Path2D" parent="."]
+position = Vector2(-1, 0)
+curve = SubResource("Curve2D_f4e0a")
+
+[node name="PikUpPathFollow" type="PathFollow2D" parent="PikUpPath"]
+unique_name_in_owner = true
+position = Vector2(-0.224609, -24.1172)
+
+[connection signal="body_entered" from="PushArea" to="." method="_on_push_area_body_entered" flags=3]
+[connection signal="body_exited" from="PushArea" to="." method="_on_push_area_body_exited" flags=3]

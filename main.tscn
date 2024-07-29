@@ -1,9 +1,11 @@
-[gd_scene load_steps=5 format=3 uid="uid://5rmheinuxb53"]
+[gd_scene load_steps=7 format=3 uid="uid://5rmheinuxb53"]
 
 [ext_resource type="Script" path="res://main.gd" id="1_c2x3n"]
 [ext_resource type="PackedScene" uid="uid://cni0drnmpu55g" path="res://player.tscn" id="1_x8vu4"]
 [ext_resource type="PackedScene" uid="uid://d1tiv376jb4cn" path="res://pikmin.tscn" id="2_w2jav"]
 [ext_resource type="PackedScene" uid="uid://ylxwqdkclaow" path="res://emini.tscn" id="4_e4kep"]
+[ext_resource type="PackedScene" path="res://quenching_emblem.tscn" id="5_4q6pd"]
+[ext_resource type="PackedScene" path="res://rocket.tscn" id="5_y81wj"]
 
 [node name="Main" type="Node2D"]
 script = ExtResource("1_c2x3n")
@@ -12,5 +14,11 @@ pikminScene = ExtResource("2_w2jav")
 [node name="Player" parent="." instance=ExtResource("1_x8vu4")]
 position = Vector2(171, 107)
 
+[node name="QuenchingEmblem" parent="." instance=ExtResource("5_4q6pd")]
+position = Vector2(160, 472)
+
+[node name="Rocket" parent="." instance=ExtResource("5_y81wj")]
+position = Vector2(800, 472)
+
 [node name="Emini" parent="." instance=ExtResource("4_e4kep")]
-position = Vector2(912, 464)
+position = Vector2(928, 328)
