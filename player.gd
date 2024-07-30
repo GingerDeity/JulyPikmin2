@@ -5,18 +5,15 @@ extends CharacterBody2D
 
 const SPEED = 300.0
 const WHISTLE_TIMER = 5.5
-var WHISTLE_RADIUS
-var CURSOR_LIMIT
-
 var pikmin_count = 20
 
-# Get the gravity from the project settings to be synced with RigidBody nodes.
-var gravity = ProjectSettings.get_setting("physics/2d/default_gravity")
+var WHISTLE_RADIUS
+var CURSOR_LIMIT
 
 func _ready():
 	WHISTLE_RADIUS = whistleArea.shape.radius
 	CURSOR_LIMIT = WHISTLE_RADIUS
-	whistleArea.position = $Cursor.position
+	whistleArea.position = %Cursor.position
 	whistleArea.disabled = true
 
 func _on_pikmin_follow_body_exited(body):
@@ -43,18 +40,18 @@ func _physics_process(_delta):
 
 func _input(event):
 	if event is InputEventMouseMotion:
-		$Cursor.position = ($Cursor.position + event.relative).limit_length(CURSOR_LIMIT)
+		%Cursor.position = (%Cursor.position + event.relative).limit_length(CURSOR_LIMIT)
 	elif event.is_action_pressed("throw"):
 		if (pikmin_count > 0):
-			get_parent().add_pikmin($Cursor.global_position, PIKMIN_STATE.IDLE)
+			get_parent().add_pikmin(%Cursor.global_position)
 			pikmin_count -= 1
 			print("[Player] Curr Inventory: ", pikmin_count)
 	elif event.is_action_pressed("whistle"):
-		$WhistleTimer.start(WHISTLE_TIMER)
+		%WhistleTimer.start(WHISTLE_TIMER)
 		whistleArea.disabled = false
 		print("whistle area enabled")
 	elif event.is_action_released("whistle"):
-		$WhistleTimer.stop()
+		%WhistleTimer.stop()
 		whistleArea.disabled = true
 		print("whistle area disabled")
 
@@ -64,5 +61,5 @@ func _on_whistle_timer_timeout():
 
 func _on_whistle_body_entered(body):
 	if body is Pikmin:
-		body.set_target($PikminFollow/PikminPikup)
+		body.set_target(%PikminPikup)
 		body.set_state(PIKMIN_STATE.FOLLOW)

@@ -28,12 +28,15 @@ scale = Vector2(0.476563, 0.476563)
 texture = ExtResource("1_0rc2m")
 
 [node name="PikminFollow" type="Area2D" parent="."]
+unique_name_in_owner = true
 collision_mask = 2
 
 [node name="PikminPikup" type="CollisionShape2D" parent="PikminFollow"]
+unique_name_in_owner = true
 shape = SubResource("CircleShape2D_tdtyd")
 
 [node name="Cursor" type="Sprite2D" parent="."]
+unique_name_in_owner = true
 position = Vector2(136, 2.27374e-13)
 scale = Vector2(0.25, 0.25)
 texture = ExtResource("1_0rc2m")
@@ -48,6 +51,7 @@ position = Vector2(136, 0)
 shape = SubResource("CircleShape2D_73ggn")
 
 [node name="WhistleTimer" type="Timer" parent="."]
+unique_name_in_owner = true
 
 [connection signal="body_entered" from="PikminFollow" to="." method="_on_pikmin_follow_body_entered"]
 [connection signal="body_exited" from="PikminFollow" to="." method="_on_pikmin_follow_body_exited"]

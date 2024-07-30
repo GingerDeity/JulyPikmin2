@@ -44,6 +44,7 @@ unique_name_in_owner = true
 wait_time = 0.5
 one_shot = true
 
+[connection signal="area_entered" from="FlockView" to="." method="_on_flock_view_area_entered" flags=3]
 [connection signal="body_entered" from="FlockView" to="." method="_on_view_body_entered" flags=3]
 [connection signal="body_exited" from="FlockView" to="." method="_on_view_body_exited"]
 [connection signal="timeout" from="AttackWindup" to="." method="_on_attack_windup_timeout"]
