@@ -9,38 +9,40 @@ extends CharacterBody2D
 @export var view_distance := 50.0
 @export var avoid_distance := 30.0
 
+enum STATE {IDLE, FOLLOW, IN_PARTY, ATTACK, CARRY}
+
 var _neighbors: Array = []
 var _target: Node2D
 var _velocity: Vector2
-var state = PIKMIN_STATE.IDLE
+var state = STATE.IDLE
 
 const DAMAGE = 1
 
 func set_state(state):
 	match state:
-		PIKMIN_STATE.IDLE:
+		STATE.IDLE:
 			set_target(null)
 			set_velocity(Vector2.ZERO)
-		PIKMIN_STATE.IN_PARTY:
+		STATE.IN_PARTY:
 			set_velocity(Vector2.ZERO)
-		PIKMIN_STATE.ATTACK:
-			if self.state == PIKMIN_STATE.ATTACK: return
+		STATE.ATTACK:
+			if self.state == STATE.ATTACK: return
 			self.state = state
 			var entities = %Notify.get_overlapping_bodies()
 			for entity in entities:
 				if entity != self && entity is Pikmin:
 					entity.set_target(_target)
-					entity.set_state(PIKMIN_STATE.ATTACK)
+					entity.set_state(STATE.ATTACK)
 					break
 	self.state = state
 	
 func _physics_process(_delta):
 	match state:
-		PIKMIN_STATE.FOLLOW:
+		STATE.FOLLOW:
 			apply_movement()
-		PIKMIN_STATE.ATTACK:
+		STATE.ATTACK:
 			apply_movement()
-		PIKMIN_STATE.CARRY:
+		STATE.CARRY:
 			apply_movement()
 	set_velocity(_velocity)
 	move_and_slide()
@@ -48,29 +50,32 @@ func _physics_process(_delta):
 
 func _on_attack_windup_timeout():
 	match state:
-		PIKMIN_STATE.ATTACK:
+		STATE.ATTACK:
 			%AttackWindup.start()
 	var entities = %FlockView.get_overlapping_bodies()
 	for entity in entities:
 		if entity is Emini: entity.damage(DAMAGE)
 
+func alert(target):
+	set_target(target)
+	set_state(STATE.FOLLOW)
+
 func _on_view_body_entered(body: PhysicsBody2D):
 	if self == body: 
 		_neighbors.append(body)
 		return
+	
 	match body.get_name():
 		"Pikmin":
-			print("AAA")
 			_neighbors.append(body)
 		"Emini": 
-			print("hewwo")
-			if state == PIKMIN_STATE.ATTACK: return
+			if state == STATE.ATTACK: return
 			set_target(body)
-			set_state(PIKMIN_STATE.ATTACK)
+			set_state(STATE.ATTACK)
 			if %AttackWindup.is_stopped(): %AttackWindup.start()
 		"QuenchingEmblem":
-			if state == PIKMIN_STATE.CARRY: return
-			set_state(PIKMIN_STATE.CARRY)
+			if state == STATE.CARRY: return
+			set_state(STATE.CARRY)
 			var toFollow = body.get_path2follow2d()
 			randomize()
 			toFollow.progress_ratio = randf()
@@ -81,17 +86,24 @@ func _on_view_body_entered(body: PhysicsBody2D):
 
 func _on_view_body_exited(body: PhysicsBody2D):
 	if body is Pikmin: _neighbors.remove_at(_neighbors.find(body))
-	
+
 func kill(): queue_free()
 
 func set_target(target): _target = target
+
+func _on_flock_view_area_entered(area):
+	match area.name:
+		"Whistle":
+			set_target(area.get_parent().get_parent())
+			set_state(STATE.FOLLOW)
+		"PikminFollow":
+			set_state(STATE.IN_PARTY)
 
 func apply_movement():
 	if _target == null: return
 	var target_vector = global_position.direction_to(_target.global_position) * max_speed * mouse_follow_force
 
 	# get cohesion, alignment, and separation vectors
-	print(_neighbors)
 	var vectors = get_neighbors_status(_neighbors)
 
 	# steer towards vectors
@@ -128,6 +140,3 @@ func get_neighbors_status(flock: Array):
 	center_vector = center_dir * center_speed
 
 	return [center_vector, align_vector, avoid_vector]
-
-func _on_flock_view_area_entered(area):
-	print(area)

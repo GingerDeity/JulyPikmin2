@@ -17,14 +17,14 @@ func _ready():
 	whistleArea.disabled = true
 
 func _on_pikmin_follow_body_exited(body):
-	if body.get_state() == PIKMIN_STATE.IN_PARTY:
-		body.set_state(PIKMIN_STATE.FOLLOW)
+	#To be added once pikmin stay present in world
+	#if body.get_state() == PIKMIN_STATE.IN_PARTY:
+	#	body.set_state(PIKMIN_STATE.FOLLOW)
+	pass
 
 func _on_pikmin_follow_body_entered(body):
 	pikmin_count += 1
-	body.set_state(PIKMIN_STATE.IN_PARTY)
 	body.queue_free() #don't comment this line if you want pikmin to immediately despawn upon contact
-	get_parent().remove_child(body)
 	print("[Player] Curr Inventory: ", pikmin_count)
 
 func _physics_process(_delta):
@@ -45,21 +45,16 @@ func _input(event):
 		if (pikmin_count > 0):
 			get_parent().add_pikmin(%Cursor.global_position)
 			pikmin_count -= 1
-			print("[Player] Curr Inventory: ", pikmin_count)
 	elif event.is_action_pressed("whistle"):
 		%WhistleTimer.start(WHISTLE_TIMER)
 		whistleArea.disabled = false
-		print("whistle area enabled")
 	elif event.is_action_released("whistle"):
 		%WhistleTimer.stop()
 		whistleArea.disabled = true
-		print("whistle area disabled")
 
 func _on_whistle_timer_timeout():
 	whistleArea.disabled = true
-	print("whistle area disabled")
 
 func _on_whistle_body_entered(body):
 	if body is Pikmin:
-		body.set_target(%PikminPikup)
-		body.set_state(PIKMIN_STATE.FOLLOW)
+		body.alert(%PikminPikup)
